@@ -3,21 +3,29 @@ require_once 'exceptions.php';
 
 class Periods {
     protected array $dates;
-    private string $separator;
+    protected string $separator;
 
     /**
+     * Constructor.
+     *
+     * @param string $json
+     * @param string $separator
      * @throws InvalidJSON|InvalidDate
      */
-    public function __construct(string $json, $separator="/")
+    public function __construct(string $json, string $separator="/")
     {
         $this->setDates($json, $separator);
         $this->separator = $separator;
     }
 
     /**
+     * Assigns decoded JSON to "dates" parameter.
+     *
+     * @param string $json
+     * @param string $separator
      * @throws InvalidJSON|InvalidDate
      */
-    protected function setDates($json, $separator)
+    protected function setDates(string $json, string $separator)
     {
         if (! $dates = json_decode($json)) {
             throw new InvalidJSON("Invalid JSON string!");
@@ -29,9 +37,13 @@ class Periods {
     }
 
     /**
+     * Validates dates.
+     *
+     * @param array $dates
+     * @param string $separator
      * @throws InvalidDate
      */
-    public function validateDates($dates, $separator)
+    public function validateDates(array $dates, string $separator)
     {
         $month = null;
         $year = null;
@@ -78,8 +90,11 @@ class Periods {
      * Checks days periods if they have continuance and intersections and unites them if they do.
      * Returns a new array of checked periods.
      *
+     * @param array $dates
+     * @param string $separator
+     * @return array
      */
-    public function makePeriodsArray($dates, $separator): array
+    public function makePeriodsArray(array $dates, string $separator): array
     {
         $daysPeriods = [];
 
@@ -118,7 +133,13 @@ class Periods {
         return $daysPeriods;
     }
 
-    public function humanReadable() {
+    /**
+     * Returns a human-readable string of dates periods.
+     *
+     * @return string
+     */
+    public function humanReadable(): string
+    {
         $daysPeriods = $this->makePeriodsArray($this->dates, $this->separator);
 
         $idx = array_rand($this->dates);
